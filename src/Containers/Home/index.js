@@ -8,10 +8,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import * as actions from '../../actions'
+import { Link } from 'react-router-dom'
 
 const ingredientList = [
   "flour", "sugar", "salt", "butter", "milk"
@@ -24,17 +22,23 @@ class Home extends Component {
     this.handleIngredient = this.handleIngredient.bind(this)
     this.fetchSearch = this.fetchSearch.bind(this)
     this.state = {
-      term: "",
-      ingredients: ["milk"]
+      term: localStorage.getItem('term') || "",
+      ingredients: []
     }
   }
+
   fetchSearch () {
-    // TODO: something is missing here for fetching
+    const {term, ingredients} = this.state
+    this.props.searchRecipes(term, ingredients)
+    localStorage.setItem('term', term)
+    localStorage.setItem('ingredients', ingredients)
   }
+
   handleSearch(event) {
     const term = event.target.value
     this.setState({term})
   }
+
   handleIngredient(ingredient, event) {
     const {ingredients} = {...this.state}
     if (event.target.checked) {
@@ -45,9 +49,11 @@ class Home extends Component {
     }
     this.setState({ingredients})
   }
+
   render () {
     const {term, ingredients} = this.state
     const {recipes, isLoading} = this.props
+
     return (
       <HomeWrapper>
         <Input
@@ -74,11 +80,11 @@ class Home extends Component {
             )
           )}
         </div>
-        <Button onClick={this.fetchSearch}>
+        <Button component={Link} to="/search" onClick={this.fetchSearch}>
           search
         </Button>
         <Divider />
-        {
+        {/* {
           recipes && (
             <List>
               {recipes.map( recipe =>
@@ -88,14 +94,12 @@ class Home extends Component {
               )}
             </List>
           )
-        }
+        } */}
         {isLoading && <LinearProgress />}
         <Divider />
-        {/*
-          TODO: Add a recipe component here.
+          {/* TODO: Add a recipe component here.
           I'm expecting you to have it return null or a component based on the redux state, not passing any props from here
-          I want to see how you wire up a component with connect and build actions.
-        */}
+          I want to see how you wire up a component with connect and build actions. */}       
       </HomeWrapper>
     )
   }
@@ -103,11 +107,13 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   const { search } = state
+  
   return {...search}
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   searchRecipes: actions.searchRecipes,
 }, dispatch)
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

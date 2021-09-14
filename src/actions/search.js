@@ -2,16 +2,16 @@ export const GET_SEARCH = "GET_SEARCH"
 export const RECEIVE_SEARCH = "RECEIVE_SEARCH"
 export const FAIL_SEARCH = "FAIL_SEARCH"
 
-const fetchingSearch = () => ({
+export const fetchingSearch = () => ({
   type: GET_SEARCH
 })
 
-const fetchedSearch = (payload) => ({
+export const fetchedSearch = (payload) => ({
   type: RECEIVE_SEARCH,
   payload
 })
 
-const failedSearch = (payload) => ({
+export const failedSearch = (payload) => ({
   type: FAIL_SEARCH,
   payload
 })
@@ -32,8 +32,11 @@ export const executeSearch = async (name, ingredients) => {
 export const searchRecipes = (name, ingredients) => {
   return (dispatch) => {
     dispatch(fetchingSearch())
-    return executeSearch(name, ingredients).then(
-      res => fetchedSearch(res)
+    return executeSearch(name, ingredients)
+    .then(
+      res => {
+        dispatch(fetchedSearch(res))
+      }
     ).catch(
       err => dispatch(failedSearch(err))
     )

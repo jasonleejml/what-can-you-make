@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const HomeWrapper = styled.div`
+export const RecipePageWrapper = styled.div`
   width: 75vw;
   height: 20vh;
   display: flex;
